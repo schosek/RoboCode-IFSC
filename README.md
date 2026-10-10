@@ -1,8 +1,8 @@
-# RoboCode-IFSC
+
 # Robocode — Projeto de Introdução à Computação
 
 ![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Robocode](https://img.shields.io/badge/Robocode-Tank%20Royale-red?style=for-the-badge)
+![Robocode](https://img.shields.io/badge/Robocode-red?style=for-the-badge)
 ![IFSC](https://img.shields.io/badge/IFSC-Instituto%20Federal%20de%20Santa%20Catarina-green?style=for-the-badge)
 
 Trabalho desenvolvido para a disciplina de **Introdução à Computação** do **Instituto Federal de Santa Catarina (IFSC)**, no qual criamos um robô em **Java** para competir na plataforma **Robocode**.
@@ -15,13 +15,13 @@ Trabalho desenvolvido para a disciplina de **Introdução à Computação** do *
 |------|-----------|
 | **Instituição** | Instituto Federal de Santa Catarina (IFSC) |
 | **Disciplina** | Introdução à Computação |
-| **Professor** | Diego Meceiros |
+| **Professor** | Diego Medeiros |
 
 ## 👥 Integrantes
 
 - Bernardo Zinder
 - Felipe Menhegel
-- Guilherme
+- Guilherme Schosek
 
 ---
 
@@ -31,7 +31,6 @@ O [Robocode](https://robocode.sourceforge.io/) é um jogo de programação em qu
 
 ##  Estratégia do Robô
 
-> Descreva aqui como o robô de vocês funciona.
 
 - **Movimentação:** _(ex.: movimento circular, evita paredes, muda de direção ao ser atingido)_
 - **Radar:** _(ex.: varredura contínua de 360°, trava no alvo)_
