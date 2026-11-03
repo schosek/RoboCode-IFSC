@@ -15,6 +15,13 @@ import java.awt.Color;
          */
         public void run() {
 		 setColors(Color.red,Color.blue,Color.red); // body,gun,radar
+		//Liberta os movimentos do ROBO
+		setAdjustRadarForRobotTurn(true);
+		setAdjustGunForRobotTurn(true);
+		setAdjustRadarForGunTurn(true);
+		
+		//gira o radar infinitamente
+	
 
 //-----------------------------------COLETANDO OS DADOS DA ARENA----------------------------------------------------
             // Pegando a posição do robo
@@ -79,6 +86,8 @@ import java.awt.Color;
 
 			double giroFinal = robocode.util.Utils.normalRelativeAngleDegrees(anguloAlinhamento - getHeading());
 			turnRight(giroFinal);
+	// -------------------LOOP`----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	
+
             // Robot main loop
             while(true) {
             int direcao = (int) Math.round(getHeading()); 
@@ -90,7 +99,7 @@ import java.awt.Color;
 		        ahead(largura - 120);
     }
     
-    // Chegou perto da próxima quina? Vira 90 graus para fazer a curva perfeita
+    // Chegou perto da próxima quina. Vira 90 graus para fazer a curva perfeita
     turnRight(90);
 }
 }
@@ -98,24 +107,36 @@ import java.awt.Color;
          * onScannedRobot: What to do when you see another robot
          */
         public void onScannedRobot(ScannedRobotEvent e) {
-            // Replace the next line with any behavior you would like
-            fire(1);
+        // achando o safado que vai levar bala
+		double anguloDoSafado = getHeadingRadians() + e.getBearingRadians();
+		   
+		//caculando o quanto o radar tem que mexer para pegar o safado
+		double giroDoRadar = robocode.util.Utils.normalRelativeAngle(anguloDoSafado - getRadarHeadingRadians());
+		
+		//Adciona um ""CHORINHO""  para dar bala bem no safado
+		double chorinho = Math.signum(giroDoRadar) * (Math.PI / 18.0);
+            
+		//Gira o treco
+		setTurnRadarRightRadians(giroDoRadar + chorinho);
+		
+		//TOMA SAFADO!!!!!!!!
+		fire(1);
+
         }
 
         /**
          * onHitByBullet: What to do when you're hit by a bullet
          */
         public void onHitByBullet(HitByBulletEvent e) {
-            // Replace the next line with any behavior you would like
-            back(10);
+           
+            
         }
 
         /**
          * onHitWall: What to do when you hit a wall
          */
         public void onHitWall(HitWallEvent e) {
-            // Replace the next line with any behavior you would like
-            back(20);
+           
         }
     }
 
