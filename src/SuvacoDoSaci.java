@@ -20,13 +20,14 @@ import java.awt.Color;
 		setAdjustGunForRobotTurn(true);
 		setAdjustRadarForGunTurn(true);
 		
-		//gira o radar infinitamente
+		//Gira o radar 360 no inicio para achar alguem na largada
+		setTurnRadarRight(360);
 	
 
 //-----------------------------------COLETANDO OS DADOS DA ARENA----------------------------------------------------
             // Pegando a posição do robo
 			double x = getX();
- 			double y = getY();
+			double y = getY();
 			double largura = getBattleFieldWidth();
 			double altura = getBattleFieldHeight();
 			//Cauculando as distancias até a parede
@@ -90,6 +91,9 @@ import java.awt.Color;
 
             // Robot main loop
             while(true) {
+            // VARREDURA CONTINUA: manda o radar rodar sem parar. Se perder o lock, ele nunca fica cego!
+            setTurnRadarRight(Double.POSITIVE_INFINITY);
+
             int direcao = (int) Math.round(getHeading()); 
 		    if (direcao == 0 || direcao == 180 || direcao == 360) {
 			// NAO MEXER NO (-120), SE NAO O ROBO VAI FICAR BATENDO NAS PAREDES, obrigado
@@ -107,28 +111,55 @@ import java.awt.Color;
          * onScannedRobot: What to do when you see another robot
          */
         public void onScannedRobot(ScannedRobotEvent e) {
-        // achando o safado que vai levar bala
-		double anguloDoSafado = getHeadingRadians() + e.getBearingRadians();
-		   
-		//caculando o quanto o radar tem que mexer para pegar o safado
-		double giroDoRadar = robocode.util.Utils.normalRelativeAngle(anguloDoSafado - getRadarHeadingRadians());
-		
-		//Adciona um ""CHORINHO""  para dar bala bem no safado
-		double chorinho = Math.signum(giroDoRadar) * (Math.PI / 18.0);
-            
-		//Gira o treco
-		setTurnRadarRightRadians(giroDoRadar + chorinho);
-		
-		//TOMA SAFADO!!!!!!!!
-		fire(1);
+//-----------------------------------Radar lock----------------------------------------------------
+			double anguloDoSafado = getHeadingRadians() + e.getBearingRadians(); // achando o safado que vai levar bala
+			double giroDoRadar = robocode.util.Utils.normalRelativeAngle(anguloDoSafado - getRadarHeadingRadians());//caculando o quanto o radar tem que mexer para pegar o safado
+			double chorinho = Math.signum(giroDoRadar) * (Math.PI / 18.0);	//Adciona um ""CHORINHO""  para dar bala bem no safado
+			// Sobrescreve a varredura infinita com a trava instantanea em cima do alvo
+			setTurnRadarRightRadians(giroDoRadar + chorinho);
 
+//-----------------------------------CALCULANDO FORÇA DO TIRO--------------------------------------
+			// Se tiver colado da paulada (3), se tiver longe economiza bala
+			double distancia = e.getDistance();
+			double forcaTiro = 400.0 / distancia;
+			if (forcaTiro > 3.0) {
+				forcaTiro = 3.0;
+			} else if (forcaTiro < 1.0) {
+				forcaTiro = 1.0;
+			}
+
+//-----------------------------------MIRA PREDITIVA (ADIVINHANDO ONDE ELE VAI ESTAR)----------------
+			// Velocidade da bala depende da forca (regra do Robocode: 20 - 3 * forca)
+			double velocidadeBala = 20.0 - (3.0 * forcaTiro);
+			double tempoAteAcertar = distancia / velocidadeBala;
+
+			// Prevendo onde o safado vai estar quando a bala chegar la
+			double posicaoFuturaX = getX() + distancia * Math.sin(anguloDoSafado) + (e.getVelocity() * tempoAteAcertar * Math.sin(e.getHeadingRadians()));
+			double posicaoFuturaY = getY() + distancia * Math.cos(anguloDoSafado) + (e.getVelocity() * tempoAteAcertar * Math.cos(e.getHeadingRadians()));
+
+			// Trava para nao atirar na parede se o safado estiver quase batendo nela (arena tem 18px de margem)
+			posicaoFuturaX = Math.max(18.0, Math.min(getBattleFieldWidth() - 18.0, posicaoFuturaX));
+			posicaoFuturaY = Math.max(18.0, Math.min(getBattleFieldHeight() - 18.0, posicaoFuturaY));
+
+			// Calculando o angulo exato pra onde o canhao tem que apontar
+			double anguloPredito = Math.atan2(posicaoFuturaX - getX(), posicaoFuturaY - getY());
+			double giroDoCanhao = robocode.util.Utils.normalRelativeAngle(anguloPredito - getGunHeadingRadians());
+
+			// Gira o canhao pro futuro dele
+			setTurnGunRightRadians(giroDoCanhao);
+
+//-----------------------------------DISPARO SEM TRAVAR--------------------------------------------
+			// So da tiro se a mira tiver quase perfeita no alvo e a arma nao tiver pelando de quente
+			if (getGunHeat() == 0.0 && Math.abs(giroDoCanhao) < Math.toRadians(8)) {
+				// TOMA SAFADO!!!!!!!!
+				setFire(forcaTiro);
+			}
         }
-
         /**
          * onHitByBullet: What to do when you're hit by a bullet
          */
         public void onHitByBullet(HitByBulletEvent e) {
-           
+            
             
         }
 
@@ -136,7 +167,17 @@ import java.awt.Color;
          * onHitWall: What to do when you hit a wall
          */
         public void onHitWall(HitWallEvent e) {
-           
+            // Se colidir na parede, recua e gira para retomar a rota
+            back(40);
+            turnRight(90);
+        }
+
+        /**
+         * onHitRobot: Nao fica preso empurrando outro robo se trombar
+         */
+        public void onHitRobot(HitRobotEvent e) {
+            if (e.isMyFault()) {
+                back(50);
+            }
         }
     }
-
