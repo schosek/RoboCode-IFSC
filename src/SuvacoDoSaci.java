@@ -10,6 +10,12 @@ import java.awt.Color;
      */
     public class SuvacoDoSaci extends AdvancedRobot
     {
+        // Variavel para guardar a energia anterior do safado e saber quando ele atirou
+        private double energiaDoSafado = 100.0;
+
+        // Sentido de marcha na parede: 1 = pra frente, -1 = marcha ré
+        private int direcaoMovimento = 1;
+
         /**
          * run: SuvacoDoSaci's default behavior
          */
@@ -97,20 +103,32 @@ import java.awt.Color;
             int direcao = (int) Math.round(getHeading()); 
 		    if (direcao == 0 || direcao == 180 || direcao == 360) {
 			// NAO MEXER NO (-120), SE NAO O ROBO VAI FICAR BATENDO NAS PAREDES, obrigado
-		        ahead(altura - 120); 
+		        ahead((altura - 120) * direcaoMovimento); 
 		    } 
 		    else {
-		        ahead(largura - 120);
-    }
+		        ahead((largura - 120) * direcaoMovimento);
+            }
     
-    // Chegou perto da próxima quina. Vira 90 graus para fazer a curva perfeita
-    turnRight(90);
-}
-}
+            // Chegou perto da próxima quina. Vira 90 graus para fazer a curva perfeita
+            turnRight(90);
+            }
+        }
+
         /**
          * onScannedRobot: What to do when you see another robot
          */
         public void onScannedRobot(ScannedRobotEvent e) {
+//-----------------------------------DETECCAO DE TIRO E ESQUIVA------------------------------------
+			// Se a energia dele caiu entre 0.1 e 3.0, ele acabou de atirar na nossa direcao!
+			double variacaoEnergia = energiaDoSafado - e.getEnergy();
+			if (variacaoEnergia >= 0.1 && variacaoEnergia <= 3.0) {
+				// Inverte a marcha na parede imediatamente pra bala dele passar batida no ar
+				direcaoMovimento = -direcaoMovimento;
+				setAhead(100 * direcaoMovimento);
+			}
+			// Atualiza a vida dele pra comparar no proximo turno
+			energiaDoSafado = e.getEnergy();
+
 //-----------------------------------Radar lock----------------------------------------------------
 			double anguloDoSafado = getHeadingRadians() + e.getBearingRadians(); // achando o safado que vai levar bala
 			double giroDoRadar = robocode.util.Utils.normalRelativeAngle(anguloDoSafado - getRadarHeadingRadians());//caculando o quanto o radar tem que mexer para pegar o safado
@@ -155,12 +173,18 @@ import java.awt.Color;
 				setFire(forcaTiro);
 			}
         }
+
         /**
-         * onHitByBullet: What to do when you're hit by a bullet
+         * onHitByBullet: O que fazer quando tomar bala
          */
         public void onHitByBullet(HitByBulletEvent e) {
-            
-            
+            // Inverte a direcao na parede pra nao tomar outro tiro no mesmo lugar
+            direcaoMovimento = -direcaoMovimento;
+            setAhead(80 * direcaoMovimento);
+
+            // Gira o radar pro angulo de onde veio a bala pra achar o safado
+            double anguloBala = e.getBearing();
+            setTurnRadarRight(anguloBala);
         }
 
         /**
@@ -177,7 +201,10 @@ import java.awt.Color;
          */
         public void onHitRobot(HitRobotEvent e) {
             if (e.isMyFault()) {
-                back(50);
+                // Inverte a marcha e gira um pouco para descolar da parede/robo
+                direcaoMovimento = -direcaoMovimento;
+                setAhead(100 * direcaoMovimento);
+                setTurnRight(45);
             }
         }
     }
