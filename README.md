@@ -1,75 +1,60 @@
+<h1>SuvacoDoSaci — Robocode</h1>
 
-# Robocode — Projeto de Introdução à Computação
+<p>
+  Robô desenvolvido em <strong>Java</strong> para a disciplina de
+  <strong>Introdução à Computação</strong> do <strong>IFSC</strong>.
+</p>
 
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![Robocode](https://img.shields.io/badge/Robocode-red?style=for-the-badge)
-![IFSC](https://img.shields.io/badge/IFSC-Instituto%20Federal%20de%20Santa%20Catarina-green?style=for-the-badge)
+<p>
+  <strong>Professor:</strong> Diego Medeiros<br>
+  <strong>Integrantes:</strong> Bernardo Zinder, Felipe Menhegel e Guilherme Schosek
+</p>
 
-Trabalho desenvolvido para a disciplina de **Introdução à Computação** do **Instituto Federal de Santa Catarina (IFSC)**, no qual criamos um robô em **Java** para competir na plataforma **Robocode**.
+<hr>
 
----
+<h2>O que o robô faz</h2>
 
-## Informações Acadêmicas
+<p>
+  O SuvacoDoSaci procura adversários, se aproxima e atira com mais força
+  de perto. Usa <code>AdvancedRobot</code> para movimentar o corpo,
+  o canhão e o radar ao mesmo tempo.
+</p>
 
-| Item | Descrição |
-|------|-----------|
-| **Instituição** | Instituto Federal de Santa Catarina (IFSC) |
-| **Disciplina** | Introdução à Computação |
-| **Professor** | Diego Medeiros |
+<ul>
+  <li><strong>Busca:</strong> gira o radar e o canhão em 360°, alternando movimentos para frente e para trás.</li>
+  <li><strong>Perseguição:</strong> acompanha o adversário com o radar e avança quando ele está a mais de 120 unidades.</li>
+  <li><strong>Disparo:</strong> mira na posição detectada e usa potência 3 a menos de 150 unidades; nas demais distâncias, potência 1. Só tenta atirar com o canhão frio e a mira quase alinhada.</li>
+  <li><strong>Reações:</strong> muda de direção ao receber tiros, recua e gira ao bater na parede e tenta atirar antes de recuar ao colidir com outro robô.</li>
+</ul>
 
-## 👥 Integrantes
+<br>
 
-- Bernardo Zinder
-- Felipe Menhegel
-- Guilherme Schosek
+<h2>Como executar</h2>
 
----
+<ol>
+  <li>
+    Instale o Java e o
+    <a href="https://robocode.sourceforge.io/">Robocode</a>.
+  </li>
+  <li>
+    Clone o projeto:
+    <pre><code>git clone --branch main https://github.com/schosek/RoboCode-IFSC.git</code></pre>
+  </li>
+  <li>
+    Copie <a href="src/src/SuvacoDoSaci.java">SuvacoDoSaci.java</a>
+    para <code>robots/SuvacoDoSaci/</code> dentro da instalação do Robocode.
+    Crie a pasta se necessário.
+  </li>
+  <li>Abra o arquivo no editor do Robocode e compile.</li>
+  <li>
+    Em <code>Battle &gt; New</code>, selecione o robô e os adversários
+    para começar.
+  </li>
+</ol>
 
-##  Sobre o Projeto
+<hr>
 
-O [Robocode](https://robocode.sourceforge.io/) é um jogo de programação em que o jogador escreve o código de um tanque de guerra virtual que luta de forma autônoma contra outros robôs em uma arena. O objetivo deste trabalho é aplicar conceitos de lógica de programação e orientação a objetos em Java, desenvolvendo uma estratégia própria de movimentação, mira e disparo.
-
-##  Estratégia do Robô
-
-
-- **Movimentação:** _(ex.: movimento circular, evita paredes, muda de direção ao ser atingido)_
-- **Radar:** _(ex.: varredura contínua de 360°, trava no alvo)_
-- **Mira e disparo:** _(ex.: potência do tiro varia conforme a distância do inimigo)_
-- **Defesa:** _(ex.: reação ao receber dano, desvio de projéteis)_
-
-##  Tecnologias Utilizadas
-
-- **Java** (JDK 8 ou superior)
-- **Robocode**
-- **Git e GitHub** para controle de versão
-
-##  Estrutura do Repositório
-
-```
-.
-├── src/
-│   └── (código-fonte do robô)
-├── README.md
-└── ...
-```
-
-## Como Executar
-
-1. **Instale o Java (JDK)** e o **Robocode** em sua máquina.
-2. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/SEU-USUARIO/NOME-DO-REPOSITORIO.git
-   ```
-3. **Copie o código** do robô para a pasta de robôs do Robocode (`robocode/robots/`) ou importe o projeto em uma IDE (Eclipse, IntelliJ, VS Code).
-4. **Compile** o robô (pelo editor do próprio Robocode ou pela IDE).
-5. **Abra o Robocode**, vá em `Battle > New`, selecione o nosso robô e os adversários, e inicie a batalha.
-
-6. ---
-## 📖 Referências
-
-- [Documentação oficial do Robocode](https://robocode.sourceforge.io/)
-- [Robowiki](https://robowiki.net/)
-
----
-
-<p align="center">Feito com ☕ e Java por Bernardo Zinder, Felipe Menhegel e Guilherme Scokse — IFSC</p>
+<p>
+  <a href="https://robocode.sourceforge.io/">Robocode</a> ·
+  <a href="https://robowiki.net/">RoboWiki</a>
+</p>
